@@ -1,0 +1,62 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-02-04T17:37:03+03:00",
+    "name": "MCC - Minecraft Console Client",
+    "author": "admin@mrsuffix.com",
+    "description": "Minecraft Consol Client for Pterodactyl",
+    "features": null,
+    "docker_images": {
+        "Dotnet_7": "ghcr.io\/parkervcp\/yolks:dotnet_7"
+    },
+    "file_denylist": [],
+    "startup": ".\/MinecraftClient 2>&1 | tee \/home\/container\/output.log",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Login :\"\r\n}",
+        "logs": "{}",
+        "stop": "^^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n\r\n# Sunucu dizinine git\r\ncd \/mnt\/server || { echo \"HATA: \/mnt\/server dizinine ge\u00e7ilemedi!\"; exit 1; }\r\n\r\n# \u0130ndirme URL'si\r\nDOWNLOAD_URL=\"https:\/\/github.com\/MCCTeam\/Minecraft-Console-Client\/releases\/download\/20241227-281\/MinecraftClient-20241227-281-linux-x64\"\r\n\r\n# Hedef dosya ad\u0131\r\nTARGET_FILE=\"MinecraftClient\"\r\n\r\necho \"MinecraftClient indiriliyor...\"\r\n\r\n# wget'in olup olmad\u0131\u011f\u0131n\u0131 kontrol et\r\nif ! command -v wget &> \/dev\/null; then\r\n    echo \"HATA: wget y\u00fckl\u00fc de\u011fil! L\u00fctfen y\u00fckleyin: apt install wget -y\"\r\n    exit 1\r\nfi\r\n\r\n# Dosyay\u0131 indir\r\nwget \"$DOWNLOAD_URL\" -O \"$TARGET_FILE\"\r\n\r\n# \u0130ndirme ba\u015far\u0131l\u0131 m\u0131 kontrol et\r\nif [ $? -eq 0 ]; then\r\n    echo \"Dosya ba\u015far\u0131yla indirildi.\"\r\n\r\n    # Dosyan\u0131n ger\u00e7ekten var olup olmad\u0131\u011f\u0131n\u0131 kontrol et\r\n    if [ -f \"$TARGET_FILE\" ]; then\r\n        echo \"Dosya ba\u015far\u0131yla kaydedildi: $TARGET_FILE\"\r\n\r\n        # Dosyaya 777 izni ver\r\n        chmod 777 \"$TARGET_FILE\"\r\n\r\n        if [ $? -eq 0 ]; then\r\n            echo \"Dosya izinleri ba\u015far\u0131yla ayarland\u0131 (777).\"\r\n        else\r\n            echo \"HATA: Dosya izinleri ayarlan\u0131rken bir sorun olu\u015ftu!\"\r\n            exit 1\r\n        fi\r\n    else\r\n        echo \"HATA: Dosya indirildi ancak bulunam\u0131yor!\"\r\n        exit 1\r\n    fi\r\nelse\r\n    echo \"HATA: Dosya indirilemedi!\"\r\n    exit 1\r\nfi\r\n\r\necho \"\u0130\u015flem ba\u015far\u0131yla tamamland\u0131!\"\r\nexit 0",
+            "container": "ghcr.io\/parkervcp\/installers:debian",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Minecraft Username",
+            "description": "Enter your Minecraft account username.",
+            "env_variable": "MCC_USERNAME",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Minecraft Password",
+            "description": "Enter your Minecraft account password (optional).",
+            "env_variable": "MCC_PASSWORD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Minecraft Server IP",
+            "description": "Enter the server IP address to connect to.",
+            "env_variable": "MCC_SERVER",
+            "default_value": "play.example.com",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string",
+            "field_type": "text"
+        }
+    ]
+}
