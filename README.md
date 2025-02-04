@@ -1,4 +1,4 @@
-# 🏗️ Pterodactyl Minecraft Console Client (MCC) Egg Repository
+# 🏗️ Pterodactyl Minecraft Console Client (MCC) Egg
 
 Bu repoda, **Minecraft Console Client (MCC)**'i **Pterodactyl Panel** üzerinde çalıştırmanıza olanak tanıyan bir **egg** bulunmaktadır. MCC, Minecraft sunucularına komut satırı üzerinden bağlanmayı sağlayan güçlü bir istemcidir.
 
