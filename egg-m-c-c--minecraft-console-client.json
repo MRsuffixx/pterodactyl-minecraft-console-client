@@ -35,7 +35,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string",
+            "rules": "nullable|string",
             "field_type": "text"
         },
         {
@@ -55,7 +55,7 @@
             "default_value": "play.example.com",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string",
+            "rules": "nullable|string",
             "field_type": "text"
         }
     ]
