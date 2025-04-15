@@ -1,0 +1,31 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-04-15T17:56:30+03:00",
+    "name": "MCC - Minecraft Console Client",
+    "author": "admin@mrsuffix.com",
+    "description": "Minecraft Consol Client for Pterodactyl",
+    "features": null,
+    "docker_images": {
+        "Dotnet_7": "ghcr.io\/parkervcp\/yolks:dotnet_7"
+    },
+    "file_denylist": [],
+    "startup": ".\/MinecraftClient 2>&1 | tee \/home\/container\/output.log",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"GitHub build\"\r\n}",
+        "logs": "{}",
+        "stop": "^^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# Script: MinecraftClient (MCC) Kurulum Script'i\r\n# A\u00e7\u0131klama: Bu script, Minecraft Console Client'\u0131n en son s\u00fcr\u00fcm\u00fcn\u00fc GitHub'dan indirip kurar\r\n\r\n# Renk kodlar\u0131\r\nRED='\\033[0;31m'\r\nGREEN='\\033[0;32m'\r\nYELLOW='\\033[1;33m'\r\nNC='\\033[0m' # Rengi s\u0131f\u0131rla\r\n\r\n# Fonksiyonlar\r\nlog_info() {\r\n    echo -e \"${GREEN}[B\u0130LG\u0130]${NC} $1\"\r\n}\r\n\r\nlog_warn() {\r\n    echo -e \"${YELLOW}[UYARI]${NC} $1\"\r\n}\r\n\r\nlog_error() {\r\n    echo -e \"${RED}[HATA]${NC} $1\"\r\n    exit 1\r\n}\r\n\r\n# Gerekli ara\u00e7lar\u0131 kontrol et\r\ncheck_dependencies() {\r\n    log_info \"Gerekli ara\u00e7lar kontrol ediliyor...\"\r\n    \r\n    if ! command -v wget &> \/dev\/null; then\r\n        log_error \"wget y\u00fckl\u00fc de\u011fil! L\u00fctfen y\u00fckleyin: apt-get update && apt-get install wget -y\"\r\n    fi\r\n    \r\n    if ! command -v curl &> \/dev\/null; then\r\n        log_warn \"curl y\u00fckl\u00fc de\u011fil. API istekleri i\u00e7in kurulacak...\"\r\n        apt-get update && apt-get install curl -y || log_error \"curl y\u00fcklenemedi!\"\r\n    fi\r\n    \r\n    if ! command -v jq &> \/dev\/null; then\r\n        log_warn \"jq y\u00fckl\u00fc de\u011fil. JSON i\u015fleme i\u00e7in kurulacak...\"\r\n        apt-get update && apt-get install jq -y || log_error \"jq y\u00fcklenemedi!\"\r\n    fi\r\n}\r\n\r\n# Ana kurulum dizinine git\r\ncd \/mnt\/server || log_error \"\/mnt\/server dizinine ge\u00e7ilemedi!\"\r\nlog_info \"Kurulum dizinine ge\u00e7ildi: $(pwd)\"\r\n\r\n# Ba\u011f\u0131ml\u0131l\u0131klar\u0131 kontrol et\r\ncheck_dependencies\r\n\r\n# GitHub API ile en son s\u00fcr\u00fcm\u00fc al\r\nlog_info \"GitHub'dan en son s\u00fcr\u00fcm bilgisi al\u0131n\u0131yor...\"\r\nLATEST_RELEASE=$(curl -s https:\/\/api.github.com\/repos\/MCCTeam\/Minecraft-Console-Client\/releases\/latest)\r\n\r\nif [ -z \"$LATEST_RELEASE\" ]; then\r\n    log_error \"GitHub API'den s\u00fcr\u00fcm bilgisi al\u0131namad\u0131!\"\r\nfi\r\n\r\n# S\u00fcr\u00fcm ad\u0131n\u0131 al\r\nVERSION=$(echo \"$LATEST_RELEASE\" | jq -r .tag_name)\r\nlog_info \"En son s\u00fcr\u00fcm: $VERSION\"\r\n\r\n# Linux x64 varl\u0131\u011f\u0131n\u0131 bul\r\nASSET_URL=$(echo \"$LATEST_RELEASE\" | jq -r '.assets[] | select(.name | contains(\"linux-x64\")) | .browser_download_url')\r\n\r\nif [ -z \"$ASSET_URL\" ]; then\r\n    log_error \"Linux x64 s\u00fcr\u00fcm\u00fc bulunamad\u0131! L\u00fctfen GitHub sayfas\u0131n\u0131 kontrol edin.\"\r\nfi\r\n\r\n# Hedef dosya ad\u0131\r\nTARGET_FILE=\"MinecraftClient\"\r\nlog_info \"\u0130ndiriliyor: $ASSET_URL\"\r\n\r\n# Dosyay\u0131 indir\r\nwget \"$ASSET_URL\" -O \"$TARGET_FILE\" || log_error \"Dosya indirilemedi!\"\r\n\r\n# Dosyan\u0131n ger\u00e7ekten var olup olmad\u0131\u011f\u0131n\u0131 kontrol et\r\nif [ ! -f \"$TARGET_FILE\" ]; then\r\n    log_error \"Dosya indirildi ancak bulunam\u0131yor!\"\r\nfi\r\n\r\nlog_info \"Dosya ba\u015far\u0131yla kaydedildi: $TARGET_FILE\"\r\n\r\n# Dosyaya \u00e7al\u0131\u015ft\u0131rma izni ver\r\nchmod +x \"$TARGET_FILE\" || log_error \"Dosya izinleri ayarlan\u0131rken bir sorun olu\u015ftu!\"\r\nlog_info \"Dosya izinleri ba\u015far\u0131yla ayarland\u0131 (\u00e7al\u0131\u015ft\u0131r\u0131labilir)\"\r\n\r\n# Kurulum ba\u015far\u0131l\u0131\r\nlog_info \"MinecraftClient ($VERSION) ba\u015far\u0131yla kuruldu!\"\r\nlog_info \"Minecraft Console Client'\u0131 \u00e7al\u0131\u015ft\u0131rmak i\u00e7in .\/MinecraftClient komutunu kullanabilirsiniz.\"\r\nexit 0",
+            "container": "ghcr.io\/parkervcp\/installers:debian",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": []
+}
